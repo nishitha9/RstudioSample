@@ -1,0 +1,16 @@
+---
+title: "RMarkDownSample"
+author: "Nishitha"
+date: "9/28/2022"
+output: html_document
+---
+#RMarkdown
+```{r}
+animals <- c("monkey","dog","cat")
+num_legs <- c(4,4,4)
+animals_df <- data.frame(animals,num_legs)
+```
+
+```{r} 
+animals_df
+```
