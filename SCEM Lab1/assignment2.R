@@ -96,5 +96,28 @@ print(wins_data_frame %>%
         head(3))
 
 wins_tidy <- wins_data_frame %>%
-  pivot_longer(wins_data_frame, names_to = "Year", values_to = "Wins/Total")
-print(wins_tidy)
+  pivot_longer(!...1, names_to = "Year", values_to = "wins_or_total") 
+wins_tidy <- separate(wins_tidy, col= wins_or_total, into=c("Wins", "Total"), sep="of")
+print(head(wins_tidy,n=5))
+
+looses_tidy <- lose_data_frame %>%
+  pivot_longer(!...1, names_to = "Year", values_to = "wins_or_total") 
+looses_tidy <- separate(looses_tidy, col= wins_or_total, into=c("Looses", "Total"), sep="of")
+print(head(looses_tidy,n=5))
+
+hockey_df <- full_join(wins_tidy,looses_tidy)
+hockey_df <- rename(hockey_df, Team = ...1)
+
+hockey_df$Year <- as.integer(hockey_df$Year)
+hockey_df$Wins <- as.integer(hockey_df$Wins)
+hockey_df$Total <- as.integer(hockey_df$Total)
+hockey_df$Looses <- as.integer(hockey_df$Looses)
+
+hockey_df <- hockey_df %>%
+  mutate(Draws = Total-(Wins+Looses), Wins_rt = Wins/Total, Looses_rt = Looses/Total, Draws_rt= Draws/Total) %>%
+  group_by(Team) %>%
+  summarise(W_md = median(Wins_rt), W_mn= mean(Wins_rt), L_md = median(Looses_rt), L_mn= mean(Looses_rt), D_md= median(Draws_rt), D_mn= mean(Draws_rt))
+
+hockey_df <-arrange(hockey_df,desc(W_md))
+
+
