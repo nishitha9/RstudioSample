@@ -120,4 +120,14 @@ hockey_df <- hockey_df %>%
 
 hockey_df <-arrange(hockey_df,desc(W_md))
 
+##Data Visualisation 
+
+wins_tidy$Wins<- as.integer(wins_tidy$Wins)
+wins_tidy$Year <- as.integer(wins_tidy$Year)
+wins_tidy$Total <- as.integer(wins_tidy$Total)
+print(head(wins_tidy,n=5))
+
+wins_of_ducks <- ggplot(data=wins_tidy, aes(x=Wins))+xlab("Wins")
+wins_of_ducks+geom_histogram(binwidth = 6)+ylab("Count")
+
 
