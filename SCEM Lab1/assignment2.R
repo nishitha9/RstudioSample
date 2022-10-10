@@ -119,7 +119,6 @@ hockey_df <- hockey_df %>%
   summarise(W_md = median(Wins_rt), W_mn= mean(Wins_rt), L_md = median(Looses_rt), L_mn= mean(Looses_rt), D_md= median(Draws_rt), D_mn= mean(Draws_rt))
 
 hockey_df <-arrange(hockey_df,desc(W_md))
-
 ##Data Visualisation 
 
 wins_tidy$Wins<- as.integer(wins_tidy$Wins)
@@ -127,7 +126,21 @@ wins_tidy$Year <- as.integer(wins_tidy$Year)
 wins_tidy$Total <- as.integer(wins_tidy$Total)
 print(head(wins_tidy,n=5))
 
-wins_of_ducks <- ggplot(data=wins_tidy, aes(x=Wins))+xlab("Wins")
-wins_of_ducks+geom_histogram(binwidth = 6)+ylab("Count")
+##histogram
+wins_tidy_duck <- filter(wins_tidy, ...1 == "Ducks")
+wins_of_ducks <- ggplot(data=wins_tidy_duck, aes(x=Wins))+xlab("Wins")
+wins_of_ducks+geom_histogram(binwidth = 3)+ylab("Count")
+
+#geom density 
+wins_of_ducks+geom_density(adjust=0.5)
+wins_of_ducks+geom_density(adjust=2)
+
+#geom point
+wins_teams <- wins_tidy %>%
+  pivot_wider( names_from = "...1" , values_from= "Wins") %>%
+  select(!Total)
+
+wins_of_ducks_and_eagle <- ggplot(wins_teams, aes( x= Ducks, y = Eagles))
+wins_of_ducks_and_eagle+geom_point(size=2)
 
 

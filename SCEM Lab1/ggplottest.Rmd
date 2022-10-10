@@ -1,0 +1,12 @@
+---
+title: "Assignment2"
+author: "Nishitha"
+date: "2022-10-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+ggplot(data = wins_tidy, mapping = aes(x=Wins))+geom_histogram(binwidth = 3)+ylab("Count")
