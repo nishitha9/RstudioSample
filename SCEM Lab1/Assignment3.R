@@ -80,6 +80,11 @@ Hawks_outliers <- Hawks %>%
   group_by(Species) %>%
   summarise(num_outliers_weight = number_of_outlier(Weight))
 
+cov(Hawks$Weight, Hawks$Wing,use = 'complete.obs')
+cor(Hawks$Weight, Hawks$Wing,use = 'complete.obs')
+
+variance_new <- cov(Hawks$Weight*2.4+7.1, Hawks$Wing*-1+3,use = 'complete.obs')
+realtion_new <- cor(Hawks$Weight*2.4+7.1, Hawks$Wing*-1+3,use = 'complete.obs')
 #Set Theory 
 
 # 1.Random Experiment is a procedure which can have a set of possible outcomes. 
@@ -112,3 +117,10 @@ Hawks_outliers <- Hawks %>%
 ggplot(Hawks,aes(x=Tail,color=Species))+geom_density()+theme_bw()+xlab("Tail(mm)")+ylab("Density")
 ggplot(Hawks,aes(x=Tail, y=Species, fill=Species))+geom_violin()+theme_bw()+xlab("Tail(mm)")+ylab("Species") # 
 ggplot(Hawks,aes(x=Tail, y=Weight, color=Species, shape=Species))+geom_point()+theme_bw()+xlab("Tail(mm)")+ylab("Weight(mm)") #4 Aesthetics, 1 gyphs, 2 visual cues- Shape and Color
+ggplot(Hawks,aes(x=Tail, y=Weight, color=Species))+geom_point()+geom_smooth()+theme_bw()+xlab("Tail(mm)")+ylab("Weight(mm)")+facet_wrap(~Species) #The Weight and Tail length of the Hawks are positively correlated
+
+max(Hawks$Weight,na.rm=TRUE)
+ggplot(Hawks,aes(x=Tail, y=Weight, color=Species))+geom_point()+theme_bw()+xlab("Tail(mm)")+ylab("Weight(mm)") +
+  geom_curve(x=230, xend=200, y=1980, yend=2030, arrow=arrow(length=unit(0.3,"cm")),curvature = 0.1)+
+  geom_text(x=250,y=1970, label="Heaviest Hawk")
+

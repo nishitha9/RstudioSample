@@ -1,0 +1,196 @@
+---
+title: "Assignment 3"
+author: "Nishitha Prakash"
+date: "2022-10-12"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1. Exploratory data analysis
+
+
+## 1.1 (Q1)   
+HawksTail <- Hawks$Tail 
+sample_mean_hawks_tail <- mean(HawksTail)
+sample_median_hawks_tail <- median(HawksTail)
+
+## 1.2 (Q1) and (Q2)
+HawksWingAndWeight <- Hawks %>%
+  group_by(Species) %>%
+  summarise(Wing_mean = mean(Wing,na.rm = TRUE), Wing_t_mean = mean(Wing,na.rm = TRUE,trim=0.5),Wing_med = median(Wing,na.rm = TRUE), Weight_mean = mean(Weight,na.rm = TRUE), Weight_t_mean = mean(Weight,na.rm = TRUE,trim=0.5), Weight_med = median(Weight,na.rm = TRUE))
+
+
+The median and Trimmed mean and of equal values.   
+
+## 1.3 (Q1) 
+HawksTailMean <- mean((HawksTail*2)+3)
+
+The mean of Altered Hawks Tail =   Mean of Original Hawks Tail *2 + 3
+
+## 1.3 (Q2)
+
+VarianceHawksTail <- var(HawksTail)
+SDHawksTail<- sd(HawksTail)
+
+VarianceHawksTailNew <- var(HawksTail*2+3)
+SDHawksTailNew<- sd(HawksTail*2+3)
+
+The variance and SD of original and altered Hawk Tail does not have any relationship.
+
+## 1.4 (Q1) and (Q2)
+
+hal<-Hawks$Hallux 
+hal<-hal[!is.na(hal)]
+
+outlier_val<-100
+num_outliers<-10
+corrupted_hal<-c(hal,rep(outlier_val,times=num_outliers)) 
+
+num_outliers_vect <- seq(0,1000)
+means_vect <- c()
+medians_vect <- c()
+t_means_vect <- c()
+for(num_outliers in num_outliers_vect){
+  corrupted_hal <- c(hal,rep(outlier_val,times=num_outliers))
+  means_vect <- c(means_vect, mean(corrupted_hal))
+  medians_vect <- c(medians_vect, median(corrupted_hal))
+  t_means_vect <- c(t_means_vect, mean(corrupted_hal,trim = 0.1))
+}
+
+## 1.4 (Q3)
+
+The mean looks most Robust after adding the outliers. 
+
+## 1.5 (Q1)
+
+ggplot(Hawks, aes(x= Species, y = Weight))+geom_boxplot()
+
+## 1.5 (Q2)
+Hawks_quantile <- Hawks %>%
+  group_by(Species) %>%
+  summarise(quantile025 = quantile(Weight, probs = 0.25, na.rm = TRUE), quantile050 = quantile(Weight, probs = 0.50, na.rm=TRUE), quantile075 = quantile(Weight, probs = 0.75, na.rm=TRUE))
+
+The borders of the box corresponds to quantile25 and quantile75, the line inside the box is quantile50
+
+## 1.5 (Q3)
+outlier<-0
+number_of_outlier <- function(x){
+  species_iqr <- IQR(x,na.rm = TRUE)
+  q25<-quantile(x, probs = 0.25, na.rm = TRUE)
+  q75<-quantile(x, probs = 0.75, na.rm = TRUE)
+  q25_cond<-q25-1.5*species_iqr
+  q75_cond<-q75+1.5*species_iqr
+  for(a in x){
+    if(!is.na(a) && a<q25_cond){
+      outlier<-outlier+1
+    } else if(!is.na(a) && a>q75_cond){
+      outlier<-outlier+1
+    }
+  }
+  return(outlier)
+}
+
+## 1.5 (Q4)
+Hawks_outliers <- Hawks %>%
+  group_by(Species) %>%
+  summarise(num_outliers_weight = number_of_outlier(Weight))
+  
+## 1.6 (Q1)
+cov(Hawks$Weight, Hawks$Wing,use = 'complete.obs')
+cor(Hawks$Weight, Hawks$Wing,use = 'complete.obs')
+
+## 1.6 (Q2)
+variance_new <- cov(Hawks$Weight*2.4+7.1, Hawks$Wing*-1+3,use = 'complete.obs')
+realtion_new <- cor(Hawks$Weight*2.4+7.1, Hawks$Wing*-1+3,use = 'complete.obs')
+
+The corelation of the altered dataset is the exact negative value of the original dataset. 
+....
+
+# 2. Random experiments, events and sample spaces, and the set theory
+
+##2.1 (Q1)
+1.Random Experiment is a procedure which can have a set of possible outcomes. 
+2. Event is one of the possible outcomes of an experiment. 
+3. Sample space is the total number of possible outcomes of an experiment
+
+##2.1 (Q2)
+Random Experiment of throwing a dice twice: 
+Event= (1,2) 
+Sample Space = {(1,1),(1,2),(1,3),(1,4),(1,5),(1,6)
+                 (2,1),(2,2),(2,3),(2,4),(2,5),(2,6)
+                 (3,1),(3,2),(3,3),(3,4),(3,5),(3,6)
+                 (4,1),(4,2),(4,3),(4,4),(4,5),(4,6)
+                 (5,1),(5,2),(5,3),(5,4),(5,5),(5,6)
+                 (6,1),(6,2),(6,3),(6,4),(6,5),(6,6)}
+
+##2.2 (Q1)
+
+AUB = {1,2,3,4,6}
+AUC = {1,2,3,4,5,6}
+A intersection B = {2}
+A intersection C = {}
+A complement B = {4,6}
+A complement C = {4,5,6}
+A and B are not disjoint sets but A and C are disjoint sets
+B and A complement B are not disjoint sets. 
+Partition of {1,2,3,4,5,6} Two sets= {1,2,3} and {4,5,6}, Three sets= {1,2},{3,4},{5,6}
+
+##2.2 (Q2)
+
+1. A
+2. Empty Set {}
+3. Let A={1,2,3,4} B={1,2,3,4,5,6}, SampleSet={1,2,3,4,5,6,7,8}, Here A⊆B
+Bcomplement= {7,8}, Acomplement={5,6,7,8}
+Hence, Bc ⊆ Ac
+4. 𝑥∈(𝐴∩𝐵)𝑐
+x ∉𝐴∩𝐵
+x ∉𝐴 or 𝑥∉𝐵
+x ∈𝐴𝑐 or 𝑥∈𝐵𝑐
+x ∈𝐴𝑐∪𝐵𝑐
+
+5. x ∈ (A ∪ B)c
+⇔ x ∉ A ∪ B 
+⇔ x ∉ A and x /∈ B 
+⇔ x ∈ Ac and x ∈ Bc 
+⇔ x ∈ Ac ∩ Bc
+
+##2.2 (Q4)
+1. A= Empty Set 
+2. 
+....
+
+# 3. Visualisation
+
+## 3 (Q1)
+ggplot(Hawks,aes(x=Tail,color=Species))+geom_density()+theme_bw()+xlab("Tail(mm)")+ylab("Density")
+
+
+## 3 (Q2)
+ggplot(Hawks,aes(x=Tail, y=Species, fill=Species))+geom_violin()+theme_bw()+xlab("Tail(mm)")+ylab("Species") 
+
+## 3 (Q3)
+ggplot(Hawks,aes(x=Tail, y=Weight, color=Species, shape=Species))+geom_point()+theme_bw()+xlab("Tail(mm)")+ylab("Weight(mm)") 
+1. 4 Aesthetics
+2. No Glyphs are used within the plot 
+3. 2 visual cues- Shape and Color
+
+## 3 (Q4)
+ggplot(Hawks,aes(x=Tail, y=Weight, color=Species))+geom_point()+geom_smooth()+theme_bw()+xlab("Tail(mm)")+ylab("Weight(mm)")+facet_wrap(~Species) 
+
+1. Colour, Shape, Point, Line
+2. The Weight and Tail length of the Hawks are positively correlated
+
+## 3 (Q5)
+max(Hawks$Weight,na.rm=TRUE)
+ggplot(Hawks,aes(x=Tail, y=Weight, color=Species))+geom_point()+theme_bw()+xlab("Tail(mm)")+ylab("Weight(mm)") +
+  geom_curve(x=230, xend=200, y=1980, yend=2030, arrow=arrow(length=unit(0.3,"cm")),curvature = 0.1)+
+  geom_text(x=250,y=1970, label="Heaviest Hawk")
+.....
+
+
+
